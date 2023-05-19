@@ -25,13 +25,14 @@ export default function CodeRunner() {
             indexUrl: indexUrl,
             stdin: window.prompt,
             stdout: (text) => {
-              output.innerHTML += text + "<br>";
+              output.appendChild(document.createTextNode(text));
+              output.appendChild(document.createElement("br"));
             },
             stderr: (text) => {
-              output.innerHTML += text + "<br>";
+              output.appendChild(document.createTextNode(text));
+              output.appendChild(document.createElement("br"));
             },
           });
-
           setPyodide(pyodide);
           setPyodideLoaded(true);
         })();
@@ -42,17 +43,23 @@ export default function CodeRunner() {
   async function runCode() {
     if (pyodideLoaded) {
       output.innerHTML = "";
-      pyodide.runPython(code);
+      try {
+        pyodide.runPython(code);
+      } catch (error) {
+        const pre = document.createElement("pre");
+        pre.appendChild(document.createTextNode(error.message));
+        output.appendChild(pre);
+      }
     } else {
       console.log("Pyodide not loaded yet");
     }
   }
   return (
-    <div>
+    <>
       <button disabled={!pyodideLoaded} onClick={runCode}>
         Run
       </button>
       <div id="result"></div>
-    </div>
+    </>
   );
 }
