@@ -1,3 +1,3 @@
 # playground-python
 
-- https://pyodide.org/
+Sample path: play/example1
